@@ -37,3 +37,13 @@ def list_games(studio: str = Query(None), platform: str = Query(None)):
         filtered_games = [game for game in filtered_games if platform in game.platforms]
 
     return filtered_games
+
+@app.put("/games/{game_id}", response_model=VideoGame)
+def update_game(game_id: int, updated_game: VideoGame):
+    for index, game in enumerate(games_db):
+        if game.id == game_id:
+            updated_game.id = game_id  # On conserve l'ID !
+            games_db[index] = updated_game
+            return updated_game
+
+    raise HTTPException(status_code=404, detail="Jeu non trouvé.")

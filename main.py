@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Query
+from fuzzywuzzy import fuzz
 from typing import List
 from models import VideoGame
 from models import test_db
@@ -14,10 +15,16 @@ def read_root():
 
 @app.post("/games/", response_model=VideoGame)
 def create_game(game: VideoGame):
-    # Vérifie si le jeu existe déjà exactement (on fera fuzzy plus tard)
+    # Vérifie si le jeu existe déjà avec la similarité fuzzy
     for existing_game in games_db:
-        if existing_game.name.lower() == game.name.lower():
-            raise HTTPException(status_code=400, detail="Un jeu avec ce nom existe déjà.")
+        #if existing_game.name.lower() == game.name.lower():
+        #   raise HTTPException(status_code=400, detail="Un jeu avec ce nom existe déjà.")
+        similarity = fuzz.ratio(existing_game.name.lower(), game.name.lower())
+        if similarity > 85:  # Seuil de tolérance, 85% de similarité
+            raise HTTPException(
+                status_code=400,
+                detail=f"Un jeu au nom très proche existe déjà : {existing_game.name} (similarité {similarity}%)"
+            )
         
     game.id = len(games_db) + 1
     games_db.append(game)

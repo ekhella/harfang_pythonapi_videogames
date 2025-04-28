@@ -58,6 +58,7 @@ def list_games(studio: str = Query(None), platform: str = Query(None)):
     if platform:
         filtered_games = [game for game in filtered_games if platform in game.platforms]
 
+    logger.info(f"GET /games/ | {len(filtered_games)} jeu(x) trouvé(s)")
     return filtered_games
 
 @app.put("/games/{game_id}", response_model=VideoGame)
@@ -108,7 +109,7 @@ def get_dashboard():
 
     # 5 Dernières sorties (tri par date décroissante)
     latest_releases = sorted(games_db, key=lambda g: g.release_date, reverse=True)[:5]
-
+    logger.info(f"GET /dashboard/ | {len(best_games_per_year)} années analysées")
     return {
         "best_games_per_year": best_games_per_year,
         "latest_releases": [

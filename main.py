@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from typing import List
 from models import VideoGame
 
@@ -20,3 +20,18 @@ def create_game(game: VideoGame):
 
     games_db.append(game)
     return game
+
+@app.get("/games/", response_model=List[VideoGame])
+def list_games(studio: str = Query(None), platform: str = Query(None)):
+    # Si pas de filtres, retourne tous les jeux
+    if not studio and not platform:
+        return games_db
+
+    # Sinon filtre selon les paramètres donnés
+    filtered_games = games_db
+    if studio:
+        filtered_games = [game for game in filtered_games if game.studio.lower() == studio.lower()]
+    if platform:
+        filtered_games = [game for game in filtered_games if platform in game.platforms]
+
+    return filtered_games

@@ -1,11 +1,12 @@
 from fastapi import FastAPI, HTTPException, Query
 from typing import List
 from models import VideoGame
+from models import test_db
 
 app = FastAPI()
 
 # Fausse base de données en mémoire
-games_db: List[VideoGame] = []
+games_db: List[VideoGame] = test_db.copy() 
 
 @app.get("/")
 def read_root():

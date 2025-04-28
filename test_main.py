@@ -3,6 +3,8 @@ from main import app
 
 client = TestClient(app)
 
+# On pourrait aussi utiliser pytest.
+
 def test_read_root():
     response = client.get("/")
     assert response.status_code == 200
@@ -38,6 +40,7 @@ def test_dashboard():
     assert "best_games_per_year" in dashboard
     assert "latest_releases" in dashboard
     assert "games_count_by_platform" in dashboard
+    # On vérifie ici que quelque chose est renvoyé, pas que c'est correct
     print(" Test Dashboard Validé")
 
 if __name__ == "__main__":

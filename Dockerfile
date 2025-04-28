@@ -8,6 +8,13 @@ WORKDIR /app
 # Copier les fichiers requirements et installe les dépendances
 COPY requirements.txt .
 # requirements définis avec : pip freeze > requirements.txt
+# il s'avère que c'est carrément con car la dockerisation est plus lente
+# nb : refaire requirements avec juste fastapi
+#uvicorn
+#fuzzywuzzy
+#python-Levenshtein
+#httpx
+#pydantic
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier tout le projet dans le conteneur

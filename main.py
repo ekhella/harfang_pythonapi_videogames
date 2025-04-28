@@ -23,6 +23,7 @@ games_db: List[VideoGame] = test_db.copy()
 
 @app.get("/")
 def read_root():
+    logger.info("Accès à la route / (root)")
     return {"message": "Bienvenue sur l'API de la base de données de jeux vidéo !"}
 
 @app.post("/games/", response_model=VideoGame)
@@ -65,8 +66,10 @@ def update_game(game_id: int, updated_game: VideoGame):
         if game.id == game_id:
             updated_game.id = game_id  # On conserve l'ID !
             games_db[index] = updated_game
+            logger.info(f"Jeu modifié : {updated_game.name} (ID {game_id})")
             return updated_game
-
+        
+    logger.error(f"Tentative de modification d'un jeu inexistant : ID {game_id}")
     raise HTTPException(status_code=404, detail="Jeu non trouvé.")
 
 @app.delete("/games/{game_id}")
@@ -74,8 +77,10 @@ def delete_game(game_id: int):
     for index, game in enumerate(games_db):
         if game.id == game_id:
             del games_db[index]
+            logger.info(f"Jeu supprimé : ID {game_id}")
             return {"message": f"Le jeu avec l'id {game_id} a été supprimé avec succès."}
-
+        
+    logger.error(f"Tentative de suppression d'un jeu inexistant : ID {game_id}")
     raise HTTPException(status_code=404, detail="Jeu non trouvé.")
 
 @app.get("/dashboard/")

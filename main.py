@@ -47,3 +47,12 @@ def update_game(game_id: int, updated_game: VideoGame):
             return updated_game
 
     raise HTTPException(status_code=404, detail="Jeu non trouvé.")
+
+@app.delete("/games/{game_id}")
+def delete_game(game_id: int):
+    for index, game in enumerate(games_db):
+        if game.id == game_id:
+            del games_db[index]
+            return {"message": f"Le jeu avec l'id {game_id} a été supprimé avec succès."}
+
+    raise HTTPException(status_code=404, detail="Jeu non trouvé.")

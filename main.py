@@ -1,12 +1,14 @@
 from fastapi import FastAPI, HTTPException, Query
 from fuzzywuzzy import fuzz
 from typing import List
+from collections import defaultdict
+from datetime import datetime
 from models import VideoGame
 from models import test_db
 
 app = FastAPI()
 
-# Fausse base de données en mémoire
+# Copie de la DB pour ne pas l'écraser accidentellement
 games_db: List[VideoGame] = test_db.copy() 
 
 @app.get("/")
@@ -63,3 +65,40 @@ def delete_game(game_id: int):
             return {"message": f"Le jeu avec l'id {game_id} a été supprimé avec succès."}
 
     raise HTTPException(status_code=404, detail="Jeu non trouvé.")
+
+@app.get("/dashboard/")
+def get_dashboard():
+    now = datetime.now()
+    best_games_per_year = {}
+    games_by_year = defaultdict(list)
+    games_by_platform = defaultdict(int)
+
+    # Classement par année et par plateforme
+    for game in games_db:
+        year = game.release_date.year
+        games_by_year[year].append(game)
+
+        for platform in game.platforms:
+            games_by_platform[platform] += 1
+
+    # Meilleur jeu par année (note la plus élevée)
+    for year, games in games_by_year.items():
+        best_game = max(games, key=lambda g: g.ratings)
+        best_games_per_year[year] = {
+            "name": best_game.name,
+            "ratings": best_game.ratings
+        }
+
+    # Dernières sorties (tri par date décroissante)
+    latest_releases = sorted(games_db, key=lambda g: g.release_date, reverse=True)[:5]
+
+    return {
+        "best_games_per_year": best_games_per_year,
+        "latest_releases": [
+            {
+                "name": game.name,
+                "release_date": game.release_date
+            } for game in latest_releases
+        ],
+        "games_count_by_platform": games_by_platform
+    }

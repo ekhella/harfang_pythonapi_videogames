@@ -89,7 +89,7 @@ def get_dashboard():
             "ratings": best_game.ratings
         }
 
-    # Dernières sorties (tri par date décroissante)
+    # 5 Dernières sorties (tri par date décroissante)
     latest_releases = sorted(games_db, key=lambda g: g.release_date, reverse=True)[:5]
 
     return {

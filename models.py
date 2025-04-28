@@ -11,7 +11,7 @@ class VideoGame(BaseModel):
     platforms: List[str]
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "id": 1,
                 "name": "The Witcher 3 : Wild Hunt",

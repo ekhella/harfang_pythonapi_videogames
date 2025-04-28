@@ -1,17 +1,19 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel, Field
 from datetime import date
 
 class VideoGame(BaseModel):
+    id: Optional[int] = None # il nous faut un id pour modif
     name: str = Field(..., min_length=1)
     release_date: date
     studio: str = Field(..., min_length=1)
-    ratings: int = Field(..., ge=0, le=20)  # Exemple : note entre 0 et 20
+    ratings: int = Field(..., ge=0, le=20)  # note entre 1 et 20
     platforms: List[str]
 
     class Config:
         schema_extra = {
             "example": {
+                "id": 1,
                 "name": "The Witcher 3 : Wild Hunt",
                 "release_date": "2015-05-19",
                 "studio": "CD Projekt RED",

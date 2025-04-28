@@ -18,7 +18,8 @@ def create_game(game: VideoGame):
     for existing_game in games_db:
         if existing_game.name.lower() == game.name.lower():
             raise HTTPException(status_code=400, detail="Un jeu avec ce nom existe déjà.")
-
+        
+    game.id = len(games_db) + 1
     games_db.append(game)
     return game
 

@@ -5,6 +5,16 @@ from collections import defaultdict
 from datetime import datetime
 from models import VideoGame
 from models import test_db
+import logging
+
+# Config du logger
+logging.basicConfig(
+    level=logging.INFO,  # (DEBUG / INFO / WARNING / ERROR / CRITICAL)
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+
+logger = logging.getLogger(__name__)
+
 
 app = FastAPI()
 

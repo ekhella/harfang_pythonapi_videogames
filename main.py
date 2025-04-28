@@ -33,6 +33,7 @@ def create_game(game: VideoGame):
         #   raise HTTPException(status_code=400, detail="Un jeu avec ce nom existe déjà.")
         similarity = fuzz.ratio(existing_game.name.lower(), game.name.lower())
         if similarity > 85:  # Seuil de tolérance, 85% de similarité
+            logger.warning(f"Tentative d'ajout d'un doublon proche : {game.name} ~ {existing_game.name} ({similarity}%)")
             raise HTTPException(
                 status_code=400,
                 detail=f"Un jeu au nom très proche existe déjà : {existing_game.name} (similarité {similarity}%)"
@@ -40,6 +41,7 @@ def create_game(game: VideoGame):
         
     game.id = len(games_db) + 1
     games_db.append(game)
+    logger.info(f"Jeu ajouté : {game.name} (ID {game.id})")
     return game
 
 @app.get("/games/", response_model=List[VideoGame])

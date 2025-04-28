@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from datetime import date
 
 class VideoGame(BaseModel):
-    id: Optional[int] = None # Sl nous faut un id pour modif
+    id: Optional[int] = None # Il nous faut un id pour modif
     name: str = Field(..., min_length=1)
     release_date: date
     studio: str = Field(..., min_length=1)
